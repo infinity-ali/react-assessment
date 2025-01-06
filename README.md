@@ -25,7 +25,7 @@ Ensure you have the following installed:
 
 Follow these steps to set up the project locally:
 
-1. Clone the repository:
+1. Clone the repository:  
    git clone <repository-url>  
    cd <project_name>
 2. Install dependencies:  
