@@ -71,10 +71,3 @@ Start Development Server
 4. Formik
 5. Yup
 6. Webpack
-
-_License_
-_This project is licensed under the ISC License._
-
-_Author_
-_name_
-_email_
