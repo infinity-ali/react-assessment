@@ -11,8 +11,12 @@ function NewUser() {
   const navigate = useNavigate();
   // Validation schema using Yup
   const validationSchema = Yup.object({
+    projectId: Yup.string().required("Project id is required."),
     projectName: Yup.string().required("Project Name is required."),
-    description: Yup.string().required("Description is required."),
+    description: Yup.string()
+      .required("Description is required.")
+      .min(20)
+      .max(450),
     startDate: Yup.date()
       .required("Start Date is required.")
       .typeError("Invalid date format."),
@@ -25,6 +29,7 @@ function NewUser() {
 
   const formik = useFormik({
     initialValues: {
+      projectId: "",
       projectName: "",
       description: "",
       startDate: "",
@@ -35,7 +40,7 @@ function NewUser() {
     onSubmit: (values) => {
       dispatch(addProjects(values));
       // Optionally call the onUpdate function passed as a prop to inform the parent
-      navigate("/");
+      navigate("/projects");
     },
   });
 
@@ -55,6 +60,28 @@ function NewUser() {
       }}
     >
       <form style={{ width: "100%" }} onSubmit={formik.handleSubmit}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            width: "100%",
+          }}
+        >
+          <InputLabel style={{ width: "200px", textAlign: "end" }}>
+            Project ID
+          </InputLabel>
+          <TextField
+            name="projectId"
+            value={formik.values.projectId}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.projectId && !!formik.errors.projectId}
+            helperText={formik.touched.projectId && formik.errors.projectId}
+            style={{ width: "400px" }}
+            margin="normal"
+          />
+        </Box>
         <Box
           sx={{
             display: "flex",
@@ -183,11 +210,8 @@ function NewUser() {
             mt: 2,
           }}
         >
-          <Button type="button" variant="outlined" onClick={() => navigate(-1)}>
-            Cancel
-          </Button>
           <Button type="submit" variant="contained" color="primary">
-            Update
+            Create
           </Button>
         </Box>
       </form>

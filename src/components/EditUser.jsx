@@ -12,12 +12,14 @@ function EditUser() {
     return (
       <div>
         <h1>Route Does Not Exist</h1>
-        <button onClick={() => navigate("/")}>Go Back</button>
+        <button onClick={() => navigate("/projects")}>Go Back</button>
       </div>
     );
   }
 
-  return <UpdateForm project={state.data} onCancel={() => navigate("/")} />;
+  return (
+    <UpdateForm project={state.data} onCancel={() => navigate("/projects")} />
+  );
 }
 
 export default EditUser;

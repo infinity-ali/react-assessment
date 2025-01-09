@@ -16,22 +16,25 @@ import {
 import { useNavigate } from "react-router";
 import { BookmarkAdd } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchProjects } from "../store/features/favoritesSlice";
 import {
-  addFavorite,
-  fetchProjects,
-  removeFavorite,
-} from "../store/features/favoritesSlice";
+  addBookmarkProjects,
+  fetchBookmarkProjects,
+  removeBookmarkProject,
+} from "../store/features/bookmarkSlice";
 
 const TableView = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { favorites, projects, status, error } = useSelector(
+  const { projects, status, error, addProject, updateProject } = useSelector(
     (state) => state.favorites
   );
 
+  const { bookmarkProjects } = useSelector((state) => state.bookmark);
+
   const handleEdit = (data) => {
-    navigate(`/project/${data.id}/edit`, {
+    navigate(`/projects/${data.id}/edit`, {
       state: {
         data: data,
       },
@@ -41,18 +44,19 @@ const TableView = () => {
   useEffect(() => {
     if (!projects?.data?.length) {
       dispatch(fetchProjects());
+      dispatch(fetchBookmarkProjects());
     }
-  });
+  }, [addProject, updateProject]);
 
   const handleFavorite = (project) => {
-    const isFavorited = favorites.some(
+    const isFavorited = bookmarkProjects?.data?.some(
       (favorite) => favorite.id === project.id
     );
 
     if (isFavorited) {
-      dispatch(removeFavorite(project));
+      dispatch(removeBookmarkProject(project.id));
     } else {
-      dispatch(addFavorite(project));
+      dispatch(addBookmarkProjects(project));
     }
   };
 
@@ -75,7 +79,7 @@ const TableView = () => {
         }}
       >
         <Button
-          onClick={() => navigate("/project/new")}
+          onClick={() => navigate("/projects/new")}
           variant="contained"
           color="primary"
           size="small"
@@ -159,7 +163,7 @@ const TableView = () => {
                       <TableCell
                         sx={{ cursor: "pointer" }}
                         onClick={() =>
-                          navigate(`/project/${row.id}`, {
+                          navigate(`/projects/${row.id}`, {
                             state: {
                               data: row,
                             },
@@ -177,7 +181,7 @@ const TableView = () => {
                           sx={{
                             width: "50px",
                             height: "50px",
-                            color: favorites.some(
+                            color: bookmarkProjects?.data?.some(
                               (favorite) => favorite.id === row.id
                             )
                               ? "orange" // Color when the project is a favorite

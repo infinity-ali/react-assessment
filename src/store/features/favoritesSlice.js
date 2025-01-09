@@ -71,23 +71,6 @@ export const removeProject = createAsyncThunk(
 const favoritesSlice = createSlice({
   name: "favorites",
   initialState,
-  reducers: {
-    addFavorite: (state, action) => {
-      // Check if the project is already in favorites
-      const existingProject = state.favorites.find(
-        (item) => item.id === action.payload.id
-      );
-      if (!existingProject) {
-        state.favorites.push(action.payload); // Add to favorites
-      }
-    },
-    removeFavorite: (state, action) => {
-      // Remove the project from favorites
-      state.favorites = state.favorites.filter(
-        (item) => item.id !== action.payload.id
-      );
-    },
-  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProjects.pending, (state) => {
@@ -148,5 +131,4 @@ const favoritesSlice = createSlice({
   },
 });
 
-export const { addFavorite, removeFavorite } = favoritesSlice.actions;
 export default favoritesSlice.reducer;

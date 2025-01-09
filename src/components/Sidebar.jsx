@@ -1,22 +1,22 @@
-import React, { useState } from "react";
-import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
-  Divider,
-  useMediaQuery,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Drawer, IconButton, useMediaQuery } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { fetchBookmarkProjects } from "../store/features/bookmarkSlice";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const favorites = useSelector((state) => state.favorites.favorites);
+  const { bookmarkProjects, removeBookmarkProject, addBookmarkProject } =
+    useSelector((state) => state.bookmark);
+
+  useEffect(() => {
+    dispatch(fetchBookmarkProjects());
+  }, [removeBookmarkProject, addBookmarkProject]);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -54,7 +54,7 @@ const Sidebar = () => {
                   key={item.id}
                   className="p-2 text-gray-600 hover:underline text-sm cursor-pointer"
                   onClick={() =>
-                    navigate(`/project/${item.id}`, {
+                    navigate(`/projects/${item.id}`, {
                       state: {
                         data: item,
                       },
@@ -70,19 +70,19 @@ const Sidebar = () => {
       ) : (
         <div className="w-56 py-20 items-center border-r-2 border-r-gray-300 h-screen transition-all duration-300 flex flex-col">
           <p
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/projects")}
             className="cursor-pointer p-2 text-gray-800 font-bold"
           >
             Favorite Projects
           </p>
           <div className="flex flex-col justify-start items-start px-4">
             <ul className="list-disc px-4">
-              {favorites.map((item) => (
+              {bookmarkProjects?.data?.map((item) => (
                 <li
                   key={item.id}
-                  className="p-2 text-gray-600 hover:underline text-sm cursor-pointer"
+                  className=" text-gray-600 hover:underline text-sm cursor-pointer font-bold"
                   onClick={() =>
-                    navigate(`/project/${item.id}`, {
+                    navigate(`/projects/${item.id}`, {
                       state: {
                         data: item,
                       },

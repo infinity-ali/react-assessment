@@ -5,7 +5,7 @@ module.exports = {
   mode: "development", //  Change this line accordingly to development
   entry: "./src/index.js",
   output: {
-    publicPath: "/", // This ensures that assets are correctly resolved from the root
+    publicPath: "/projects", // This ensures that assets are correctly resolved from the root
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
   },

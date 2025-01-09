@@ -13,8 +13,12 @@ const UpdateForm = ({ project, onCancel }) => {
   const navigate = useNavigate();
   // Validation schema using Yup
   const validationSchema = Yup.object({
+    projectId: Yup.string().required("Project ID is required."),
     projectName: Yup.string().required("Project Name is required."),
-    description: Yup.string().required("Description is required."),
+    description: Yup.string()
+      .required("Description is required.")
+      .min(20)
+      .max(450),
     startDate: Yup.date()
       .required("Start Date is required.")
       .typeError("Invalid date format."),
@@ -27,6 +31,7 @@ const UpdateForm = ({ project, onCancel }) => {
 
   const formik = useFormik({
     initialValues: {
+      projectId: project.projectId || "",
       projectName: project.projectName || "",
       description: project.description || "",
       startDate: project.startDate || "",
@@ -35,24 +40,9 @@ const UpdateForm = ({ project, onCancel }) => {
     },
     validationSchema,
     onSubmit: (values) => {
-      // Retrieve existing projects from localStorage
-      const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
-
-      // Update the project in the array or add it if it doesn't exist
-      const updatedProjects = storedProjects.map((p) =>
-        p.id === values.id ? { ...p, ...values } : p
-      );
-
-      // If the project does not exist in the array, add the new one
-      if (!updatedProjects.some((p) => p.id === values.id)) {
-        updatedProjects.push(values);
-      }
-
-      // Save the updated projects back to localStorage
-      localStorage.setItem("projects", JSON.stringify(updatedProjects));
       dispatch(updateProjects({ id: params.id, project: values }));
       // Optionally call the onUpdate function passed as a prop to inform the parent
-      navigate("/");
+      navigate("/projects");
     },
   });
 
@@ -72,6 +62,28 @@ const UpdateForm = ({ project, onCancel }) => {
       }}
     >
       <form style={{ width: "100%" }} onSubmit={formik.handleSubmit}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            width: "100%",
+          }}
+        >
+          <InputLabel style={{ width: "200px", textAlign: "end" }}>
+            Project ID
+          </InputLabel>
+          <TextField
+            name="projectId"
+            value={formik.values.projectId}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.projectId && !!formik.errors.projectId}
+            helperText={formik.touched.projectId && formik.errors.projectId}
+            style={{ width: "400px" }}
+            margin="normal"
+          />
+        </Box>
         <Box
           sx={{
             display: "flex",

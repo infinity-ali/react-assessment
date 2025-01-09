@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Typography,
@@ -10,28 +10,42 @@ import {
 import { BookmarkAdd, BookmarkBorder } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addFavorite, removeFavorite } from "../store/features/favoritesSlice"; // Redux actions
+import {
+  addBookmarkProjects,
+  fetchBookmarkProjects,
+  removeBookmarkProject,
+} from "../store/features/bookmarkSlice";
 
 const ViewData = ({ project }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites.favorites); // Access favorites from Redux
 
+  const { bookmarkProjects } = useSelector((state) => state.bookmark);
+
+  useEffect(() => {
+    if (!bookmarkProjects?.data?.length) {
+      dispatch(fetchBookmarkProjects());
+    }
+  }, []);
+
   // Handle toggling favorite state
   const handleFavorite = (project) => {
-    const isFavorited = favorites.some(
+    const isFavorited = bookmarkProjects?.data?.some(
       (favorite) => favorite.id === project.id
     );
 
     if (isFavorited) {
-      dispatch(removeFavorite(project)); // Dispatch removeFavorite action
+      dispatch(removeBookmarkProject(project.id)); // Dispatch removeFavorite action
     } else {
-      dispatch(addFavorite(project)); // Dispatch addFavorite action
+      dispatch(addBookmarkProjects(project)); // Dispatch addFavorite action
     }
   };
 
   // Check if project is in favorites
-  const isFavorite = favorites.some((favorite) => favorite.id === project.id);
+  const isFavorite = bookmarkProjects?.data?.some(
+    (favorite) => favorite.id === project.id
+  );
 
   return (
     <Paper
@@ -55,7 +69,7 @@ const ViewData = ({ project }) => {
           sx={{
             display: "flex",
             alignItems: "center",
-            gap: "10px",
+            gap: "20px",
             width: "100%",
           }}
         >
@@ -77,28 +91,28 @@ const ViewData = ({ project }) => {
         </IconButton>
       </Box>
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
         <InputLabel style={{ width: "200px", textAlign: "end" }}>
           Description
         </InputLabel>
         <Typography variant="body1">{project.description}</Typography>
       </Box>
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
         <InputLabel style={{ width: "200px", textAlign: "end" }}>
           Start Date
         </InputLabel>
         <Typography variant="body1">{project.startDate}</Typography>
       </Box>
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
         <InputLabel style={{ width: "200px", textAlign: "end" }}>
           End Date
         </InputLabel>
         <Typography variant="body1">{project.endDate}</Typography>
       </Box>
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
         <InputLabel style={{ width: "200px", textAlign: "end" }}>
           Project Manager
         </InputLabel>
@@ -110,8 +124,9 @@ const ViewData = ({ project }) => {
           width: "48%",
           display: "flex",
           gap: 2,
-          justifyContent: "flex-end",
+          justifyContent: "flex-start",
           mt: 2,
+          ml: "100px",
         }}
       >
         <Button type="button" variant="outlined" onClick={() => navigate(-1)}>
@@ -122,7 +137,7 @@ const ViewData = ({ project }) => {
           variant="contained"
           color="primary"
           onClick={() =>
-            navigate(`/project/${project.id}/edit`, {
+            navigate(`/projects/${project.id}/edit`, {
               state: { data: project },
             })
           }

@@ -10,7 +10,7 @@ function ViewUser() {
     return (
       <div>
         <h1>Route Does Not Exist</h1>
-        <button onClick={() => navigate("/")}>Go Back</button>
+        <button onClick={() => navigate("/projects")}>Go Back</button>
       </div>
     );
   }
@@ -20,9 +20,9 @@ function ViewUser() {
       project={state.data}
       onUpdate={(updatedProject) => {
         console.log("Updated Project:", updatedProject);
-        navigate("/");
+        navigate("/projects");
       }}
-      onCancel={() => navigate("/")}
+      onCancel={() => navigate("/projects")}
     />
   );
 }
