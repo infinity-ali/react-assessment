@@ -206,8 +206,9 @@ function NewUser() {
             width: "48%",
             display: "flex",
             gap: 2,
-            justifyContent: "flex-end",
+            justifyContent: "flex-start",
             mt: 2,
+            ml: "210px",
           }}
         >
           <Button type="submit" variant="contained" color="primary">

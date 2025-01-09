@@ -124,7 +124,7 @@ const UpdateForm = ({ project, onCancel }) => {
             onBlur={formik.handleBlur}
             error={formik.touched.description && !!formik.errors.description}
             helperText={formik.touched.description && formik.errors.description}
-            style={{ width: "400px" }}
+            style={{ width: "400px", height: "100%" }}
             margin="normal"
             multiline
             rows={4}
@@ -208,8 +208,9 @@ const UpdateForm = ({ project, onCancel }) => {
             width: "48%",
             display: "flex",
             gap: 2,
-            justifyContent: "flex-end",
+            justifyContent: "flex-start",
             mt: 2,
+            ml: "210px",
           }}
         >
           <Button type="button" variant="outlined" onClick={onCancel}>

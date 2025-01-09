@@ -95,7 +95,9 @@ const ViewData = ({ project }) => {
         <InputLabel style={{ width: "200px", textAlign: "end" }}>
           Description
         </InputLabel>
-        <Typography variant="body1">{project.description}</Typography>
+        <Typography width="400px" variant="body1">
+          {project.description}
+        </Typography>
       </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
@@ -126,7 +128,7 @@ const ViewData = ({ project }) => {
           gap: 2,
           justifyContent: "flex-start",
           mt: 2,
-          ml: "100px",
+          ml: "210px",
         }}
       >
         <Button type="button" variant="outlined" onClick={() => navigate(-1)}>
