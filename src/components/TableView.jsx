@@ -47,10 +47,8 @@ const TableView = () => {
   };
 
   useEffect(() => {
-    if (!projects?.data?.length) {
-      dispatch(fetchProjects());
-      dispatch(fetchBookmarkProjects());
-    }
+    dispatch(fetchProjects());
+    dispatch(fetchBookmarkProjects());
   }, [addProject, updateProject, addBookmarkProject, removeBookmarkProject]);
 
   const handleFavorite = (project) => {
@@ -152,13 +150,13 @@ const TableView = () => {
                 <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
-
-            {status === "loading" || bookmarkStatus === "loading" ? (
+            {status || bookmarkStatus === "loading" ? (
               <Box
                 sx={{
-                  width: "100%",
+                  width: "100px",
                   display: "flex",
                   justifyContent: "center",
+                  padding: "20px 0px",
                 }}
               >
                 <CircularProgress />

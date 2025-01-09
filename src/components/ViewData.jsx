@@ -102,7 +102,7 @@ const ViewData = ({ project }) => {
         )}
       </Box>
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
+      <Box sx={{ display: "flex", gap: "20px" }}>
         <InputLabel style={{ width: "200px", textAlign: "end" }}>
           Description
         </InputLabel>
