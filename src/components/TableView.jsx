@@ -150,7 +150,7 @@ const TableView = () => {
                 <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
-            {status || bookmarkStatus === "loading" ? (
+            {status === "loading" || bookmarkStatus === "loading" ? (
               <Box
                 sx={{
                   width: "100px",
