@@ -189,7 +189,7 @@ const TableView = () => {
                           width: "50px",
                           height: "50px",
                           color: bookmarkProjects?.data?.some(
-                            (favorite) => favorite.id === row.id
+                            (favorite) => favorite.projectId === row.projectId
                           )
                             ? "orange" // Color when the project is a favorite
                             : "gray", // Color when it's not a favorite

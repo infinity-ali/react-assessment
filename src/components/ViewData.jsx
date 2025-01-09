@@ -9,7 +9,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { BookmarkAdd, BookmarkBorder } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addBookmarkProjects,
@@ -18,6 +18,7 @@ import {
 } from "../store/features/bookmarkSlice";
 
 const ViewData = ({ project }) => {
+  const param = useLocation;
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -44,7 +45,7 @@ const ViewData = ({ project }) => {
     });
 
     if (isFavorited) {
-      dispatch(removeBookmarkProjects(project.id)); // Dispatch removeFavorite action
+      dispatch(removeBookmarkProjects(param.id)); // Dispatch removeFavorite action
     } else {
       dispatch(addBookmarkProjects(project)); // Dispatch addFavorite action
     }
@@ -52,7 +53,7 @@ const ViewData = ({ project }) => {
 
   // Check if project is in favorites
   const isFavorite = bookmarkProjects?.data?.some(
-    (favorite) => favorite.id === project.id
+    (favorite) => favorite.projectId === project.projectId
   );
 
   return (
