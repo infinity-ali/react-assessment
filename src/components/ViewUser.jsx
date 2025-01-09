@@ -1,12 +1,10 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import UpdateForm from "./UpdateForm";
+import ViewData from "./ViewData";
 
-function EditUser() {
+function ViewUser() {
   const { state } = useLocation();
   const navigate = useNavigate();
-
-  console.log(state);
 
   if (!state.data) {
     return (
@@ -17,7 +15,16 @@ function EditUser() {
     );
   }
 
-  return <UpdateForm project={state.data} onCancel={() => navigate("/")} />;
+  return (
+    <ViewData
+      project={state.data}
+      onUpdate={(updatedProject) => {
+        console.log("Updated Project:", updatedProject);
+        navigate("/");
+      }}
+      onCancel={() => navigate("/")}
+    />
+  );
 }
 
-export default EditUser;
+export default ViewUser;

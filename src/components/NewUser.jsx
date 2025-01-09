@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { TextField, Button, Box, Paper, InputLabel } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
-import { updateProjects } from "../store/features/favoritesSlice";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { addProjects } from "../store/features/favoritesSlice";
 
-const UpdateForm = ({ project, onCancel }) => {
-  const params = useParams();
-  console.log(params);
+function NewUser() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // Validation schema using Yup
@@ -27,30 +25,15 @@ const UpdateForm = ({ project, onCancel }) => {
 
   const formik = useFormik({
     initialValues: {
-      projectName: project.projectName || "",
-      description: project.description || "",
-      startDate: project.startDate || "",
-      endDate: project.endDate || "",
-      projectManager: project.projectManager || "",
+      projectName: "",
+      description: "",
+      startDate: "",
+      endDate: "",
+      projectManager: "",
     },
     validationSchema,
     onSubmit: (values) => {
-      // Retrieve existing projects from localStorage
-      const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
-
-      // Update the project in the array or add it if it doesn't exist
-      const updatedProjects = storedProjects.map((p) =>
-        p.id === values.id ? { ...p, ...values } : p
-      );
-
-      // If the project does not exist in the array, add the new one
-      if (!updatedProjects.some((p) => p.id === values.id)) {
-        updatedProjects.push(values);
-      }
-
-      // Save the updated projects back to localStorage
-      localStorage.setItem("projects", JSON.stringify(updatedProjects));
-      dispatch(updateProjects({ id: params.id, project: values }));
+      dispatch(addProjects(values));
       // Optionally call the onUpdate function passed as a prop to inform the parent
       navigate("/");
     },
@@ -200,7 +183,7 @@ const UpdateForm = ({ project, onCancel }) => {
             mt: 2,
           }}
         >
-          <Button type="button" variant="outlined" onClick={onCancel}>
+          <Button type="button" variant="outlined" onClick={() => navigate(-1)}>
             Cancel
           </Button>
           <Button type="submit" variant="contained" color="primary">
@@ -210,6 +193,6 @@ const UpdateForm = ({ project, onCancel }) => {
       </form>
     </Paper>
   );
-};
+}
 
-export default UpdateForm;
+export default NewUser;

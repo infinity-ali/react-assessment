@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -9,148 +9,202 @@ import {
   Button,
   Paper,
   useMediaQuery,
+  IconButton,
+  Box,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router";
-
-const data = [
-  {
-    projectId: "project_a",
-    projectName: "Project A",
-    startDate: "2025-01-01",
-    endDate: "2025-12-31",
-    projectManager: "John Doe",
-  },
-  {
-    projectId: "project_b",
-    projectName: "Project B",
-    startDate: "2025-01-01",
-    endDate: "2025-12-31",
-    projectManager: "John Doe",
-  },
-  {
-    projectId: "project_c",
-    projectName: "Project C",
-    startDate: "2025-01-01",
-    endDate: "2025-12-31",
-    projectManager: "John Doe",
-  },
-  {
-    projectId: "project_d",
-    projectName: "Project D",
-    startDate: "2025-01-01",
-    endDate: "2025-12-31",
-    projectManager: "John Doe",
-  },
-  {
-    projectId: "project_e",
-    projectName: "Project E",
-    startDate: "2025-01-01",
-    endDate: "2025-12-31",
-    projectManager: "John Doe",
-  },
-  {
-    projectId: "project_f",
-    projectName: "Project F",
-    startDate: "2025-01-01",
-    endDate: "2025-12-31",
-    projectManager: "John Doe",
-  },
-  {
-    projectId: "project_g",
-    projectName: "Project G",
-    startDate: "2025-01-01",
-    endDate: "2025-12-31",
-    projectManager: "John Doe",
-  },
-];
+import { BookmarkAdd } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addFavorite,
+  fetchProjects,
+  removeFavorite,
+} from "../store/features/favoritesSlice";
 
 const TableView = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { favorites, projects, status, error } = useSelector(
+    (state) => state.favorites
+  );
 
-  const handleEdit = (projectId) => {
-    navigate(`/edit/${projectId}`);
+  const handleEdit = (data) => {
+    navigate(`/project/${data.id}/edit`, {
+      state: {
+        data: data,
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (!projects?.data?.length) {
+      dispatch(fetchProjects());
+    }
+  });
+
+  const handleFavorite = (project) => {
+    const isFavorited = favorites.some(
+      (favorite) => favorite.id === project.id
+    );
+
+    if (isFavorited) {
+      dispatch(removeFavorite(project));
+    } else {
+      dispatch(addFavorite(project));
+    }
   };
 
   return (
-    <TableContainer
-      component={Paper}
-      sx={{ margin: "50px 20px", width: "97%" }}
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+        margin: "50px 20px",
+      }}
     >
-      {isMobile ? (
-        <div>
-          {data?.map((row, index) => (
-            <Paper
-              key={index}
-              sx={{
-                padding: 2,
-                marginBottom: 2,
-                display: "flex",
-                flexDirection: "column",
-                gap: 1,
-              }}
-            >
+      <Box
+        sx={{
+          width: "97%",
+          display: "flex",
+          justifyContent: "end",
+          alignItems: "end",
+        }}
+      >
+        <Button
+          onClick={() => navigate("/project/new")}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          Create New
+        </Button>
+      </Box>
+      <TableContainer component={Paper} sx={{ width: "97%" }}>
+        {isMobile ? (
+          <>
+            {status === "loading" ? (
+              <CircularProgress />
+            ) : (
               <div>
-                <strong>Project ID:</strong> {row.projectId}
-              </div>
-              <div>
-                <strong>Project Name:</strong> {row.projectName}
-              </div>
-              <div>
-                <strong>Start Date:</strong> {row.startDate}
-              </div>
-              <div>
-                <strong>End Date:</strong> {row.endDate}
-              </div>
-              <div>
-                <strong>Project Manager:</strong> {row.projectManager}
-              </div>
-              <Button
-                onClick={() => handleEdit(row.projectId)}
-                variant="contained"
-                color="primary"
-                size="small"
-              >
-                Edit
-              </Button>
-            </Paper>
-          ))}
-        </div>
-      ) : (
-        <Table>
-          <TableHead sx={{ backgroundColor: "#D3D3D3" }}>
-            <TableRow>
-              <TableCell>Project ID</TableCell>
-              <TableCell>Project Name</TableCell>
-              <TableCell>Start Date</TableCell>
-              <TableCell>End Date</TableCell>
-              <TableCell>Project Manager</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data?.map((row, index) => (
-              <TableRow sx={{ backgroundColor: "#F5F5F5" }} key={index}>
-                <TableCell>{row.projectId}</TableCell>
-                <TableCell>{row.projectName}</TableCell>
-                <TableCell>{row.startDate}</TableCell>
-                <TableCell>{row.endDate}</TableCell>
-                <TableCell>{row.projectManager}</TableCell>
-                <TableCell>
-                  <Button
-                    onClick={() => handleEdit(row.projectId)}
-                    variant="contained"
-                    color="primary"
+                {projects?.data?.map((row, index) => (
+                  <Paper
+                    key={index}
+                    sx={{
+                      padding: 2,
+                      marginBottom: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 1,
+                    }}
                   >
-                    Edit
-                  </Button>
-                </TableCell>
+                    <div>
+                      <strong>Project ID:</strong> project_{row.id}
+                    </div>
+                    <div>
+                      <strong>Project Name:</strong> {row.projectName}
+                    </div>
+                    <div>
+                      <strong>Start Date:</strong> {row.startDate}
+                    </div>
+                    <div>
+                      <strong>End Date:</strong> {row.endDate}
+                    </div>
+                    <div>
+                      <strong>Project Manager:</strong> {row.projectManager}
+                    </div>
+                    <Button
+                      onClick={() => handleEdit(row)}
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                    >
+                      Edit
+                    </Button>
+                  </Paper>
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <Table>
+            <TableHead sx={{ backgroundColor: "#D3D3D3" }}>
+              <TableRow>
+                <TableCell>Project ID</TableCell>
+                <TableCell>Project Name</TableCell>
+                <TableCell>Start Date</TableCell>
+                <TableCell>End Date</TableCell>
+                <TableCell>Project Manager</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      )}
-    </TableContainer>
+            </TableHead>
+            <TableBody>
+              {status === "loading" ? (
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <>
+                  {projects?.data?.map((row, index) => (
+                    <TableRow sx={{ backgroundColor: "#F5F5F5" }} key={index}>
+                      <TableCell
+                        sx={{ cursor: "pointer" }}
+                        onClick={() =>
+                          navigate(`/project/${row.id}`, {
+                            state: {
+                              data: row,
+                            },
+                          })
+                        }
+                      >
+                        project_{row.id}
+                      </TableCell>
+                      <TableCell>{row.projectName}</TableCell>
+                      <TableCell>{row.startDate}</TableCell>
+                      <TableCell>{row.endDate}</TableCell>
+                      <TableCell>{row.projectManager}</TableCell>
+                      <TableCell sx={{ display: "flex", gap: "5px" }}>
+                        <IconButton
+                          sx={{
+                            width: "50px",
+                            height: "50px",
+                            color: favorites.some(
+                              (favorite) => favorite.id === row.id
+                            )
+                              ? "orange" // Color when the project is a favorite
+                              : "gray", // Color when it's not a favorite
+                          }}
+                          onClick={() => handleFavorite(row)}
+                        >
+                          <BookmarkAdd />
+                        </IconButton>
+
+                        <Button
+                          onClick={() => handleEdit(row)}
+                          variant="contained"
+                          color="primary"
+                        >
+                          Edit
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </>
+              )}
+            </TableBody>
+          </Table>
+        )}
+      </TableContainer>
+    </Box>
   );
 };
 

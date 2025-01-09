@@ -1,32 +1,26 @@
 import React, { useState } from "react";
 import { Box } from "@mui/material";
 import Sidebar from "./components/Sidebar";
-import { BrowserRouter as Router, useRoutes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import routes from "./routes/routes";
 
-const AppRoutes = () => {
-  return useRoutes(routes);
-};
-
 const App = () => {
-  const [selectedProject, setSelectedProject] = useState("");
-
-  const handleChildClick = (project) => {
-    setSelectedProject(project);
-  };
-
   return (
     <Router>
       <Box
         sx={{
           display: "flex",
+          overflow: "hidden",
           flexDirection: { xs: "column", sm: "row" },
         }}
       >
-        <Sidebar onChildClick={handleChildClick} />
+        <Sidebar />
         <div style={{ flex: 1, padding: "16px" }}>
-          {selectedProject}
-          <AppRoutes />
+          <Routes>
+            {routes.map((route) => (
+              <Route key={route.id} element={route.element} path={route.path} />
+            ))}
+          </Routes>
         </div>
       </Box>
     </Router>

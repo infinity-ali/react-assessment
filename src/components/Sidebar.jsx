@@ -9,11 +9,14 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-const Sidebar = (props) => {
-  const { onChildClick } = props;
+const Sidebar = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const favorites = useSelector((state) => state.favorites.favorites);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -45,37 +48,50 @@ const Sidebar = (props) => {
               },
             }}
           >
-            <List>
-              <ListItem>
-                <ListItemText primary="Favorite Projects" />
-              </ListItem>
-              <Divider />
-              <ListItem button onClick={() => onChildClick("Project A")}>
-                <ListItemText primary="Project A" />
-              </ListItem>
-              <ListItem button onClick={() => onChildClick("Project B")}>
-                <ListItemText primary="Project B" />
-              </ListItem>
-            </List>
+            <ul className="list-disc px-4">
+              {favorites.map((item) => (
+                <li
+                  key={item.id}
+                  className="p-2 text-gray-600 hover:underline text-sm cursor-pointer"
+                  onClick={() =>
+                    navigate(`/project/${item.id}`, {
+                      state: {
+                        data: item,
+                      },
+                    })
+                  }
+                >
+                  {item.projectName}
+                </li>
+              ))}
+            </ul>
           </Drawer>
         </div>
       ) : (
         <div className="w-56 py-20 items-center border-r-2 border-r-gray-300 h-screen transition-all duration-300 flex flex-col">
-          <p className="p-2 text-gray-800 font-bold">Favorite Projects</p>
+          <p
+            onClick={() => navigate("/")}
+            className="cursor-pointer p-2 text-gray-800 font-bold"
+          >
+            Favorite Projects
+          </p>
           <div className="flex flex-col justify-start items-start px-4">
             <ul className="list-disc px-4">
-              <li
-                className="p-2 text-gray-600 hover:underline text-sm cursor-pointer"
-                onClick={() => onChildClick("Project A")}
-              >
-                Project A
-              </li>
-              <li
-                className="p-2 text-gray-600 hover:underline text-sm cursor-pointer"
-                onClick={() => onChildClick("Project B")}
-              >
-                Project B
-              </li>
+              {favorites.map((item) => (
+                <li
+                  key={item.id}
+                  className="p-2 text-gray-600 hover:underline text-sm cursor-pointer"
+                  onClick={() =>
+                    navigate(`/project/${item.id}`, {
+                      state: {
+                        data: item,
+                      },
+                    })
+                  }
+                >
+                  {item.projectName}
+                </li>
+              ))}
             </ul>
           </div>
         </div>
