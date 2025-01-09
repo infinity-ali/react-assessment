@@ -20,7 +20,7 @@ import { fetchProjects } from "../store/features/favoritesSlice";
 import {
   addBookmarkProjects,
   fetchBookmarkProjects,
-  removeBookmarkProject,
+  removeBookmarkProjects,
 } from "../store/features/bookmarkSlice";
 
 const TableView = () => {
@@ -31,7 +31,12 @@ const TableView = () => {
     (state) => state.favorites
   );
 
-  const { bookmarkProjects } = useSelector((state) => state.bookmark);
+  const {
+    bookmarkProjects,
+    bookmarkStatus,
+    addBookmarkProject,
+    removeBookmarkProject,
+  } = useSelector((state) => state.bookmark);
 
   const handleEdit = (data) => {
     navigate(`/projects/${data.id}/edit`, {
@@ -46,15 +51,17 @@ const TableView = () => {
       dispatch(fetchProjects());
       dispatch(fetchBookmarkProjects());
     }
-  }, [addProject, updateProject]);
+  }, [addProject, updateProject, addBookmarkProject, removeBookmarkProject]);
 
   const handleFavorite = (project) => {
-    const isFavorited = bookmarkProjects?.data?.some(
-      (favorite) => favorite.id === project.id
-    );
-
+    let isFavorited = false;
+    bookmarkProjects?.data?.filter((favorite) => {
+      if (favorite.projectId === project.projectId) {
+        return (isFavorited = true);
+      } else return;
+    });
     if (isFavorited) {
-      dispatch(removeBookmarkProject(project.id));
+      dispatch(removeBookmarkProjects(project.id));
     } else {
       dispatch(addBookmarkProjects(project));
     }
@@ -90,7 +97,7 @@ const TableView = () => {
       <TableContainer component={Paper} sx={{ width: "97%" }}>
         {isMobile ? (
           <>
-            {status === "loading" ? (
+            {status === "loading" || bookmarkStatus === "loading" ? (
               <CircularProgress />
             ) : (
               <div>
@@ -145,68 +152,67 @@ const TableView = () => {
                 <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {status === "loading" ? (
-                <Box
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <CircularProgress />
-                </Box>
-              ) : (
-                <>
-                  {projects?.data?.map((row, index) => (
-                    <TableRow sx={{ backgroundColor: "#F5F5F5" }} key={index}>
-                      <TableCell
-                        sx={{ cursor: "pointer" }}
-                        onClick={() =>
-                          navigate(`/projects/${row.id}`, {
-                            state: {
-                              data: row,
-                            },
-                          })
-                        }
-                      >
-                        Project_{row.id}
-                      </TableCell>
-                      <TableCell className="capitalize">
-                        {row.projectName}
-                      </TableCell>
-                      <TableCell>{row.startDate}</TableCell>
-                      <TableCell>{row.endDate}</TableCell>
-                      <TableCell>{row.projectManager}</TableCell>
-                      <TableCell sx={{ display: "flex", gap: "5px" }}>
-                        <IconButton
-                          sx={{
-                            width: "50px",
-                            height: "50px",
-                            color: bookmarkProjects?.data?.some(
-                              (favorite) => favorite.id === row.id
-                            )
-                              ? "orange" // Color when the project is a favorite
-                              : "gray", // Color when it's not a favorite
-                          }}
-                          onClick={() => handleFavorite(row)}
-                        >
-                          <BookmarkAdd />
-                        </IconButton>
 
-                        <Button
-                          onClick={() => handleEdit(row)}
-                          variant="contained"
-                          color="primary"
-                        >
-                          Edit
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </>
-              )}
-            </TableBody>
+            {status === "loading" || bookmarkStatus === "loading" ? (
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : (
+              <TableBody>
+                {projects?.data?.map((row, index) => (
+                  <TableRow sx={{ backgroundColor: "#F5F5F5" }} key={index}>
+                    <TableCell
+                      sx={{ cursor: "pointer" }}
+                      onClick={() =>
+                        navigate(`/projects/${row.id}`, {
+                          state: {
+                            data: row,
+                          },
+                        })
+                      }
+                    >
+                      Project_{row.id}
+                    </TableCell>
+                    <TableCell className="capitalize">
+                      {row.projectName}
+                    </TableCell>
+                    <TableCell>{row.startDate}</TableCell>
+                    <TableCell>{row.endDate}</TableCell>
+                    <TableCell>{row.projectManager}</TableCell>
+                    <TableCell sx={{ display: "flex", gap: "5px" }}>
+                      <IconButton
+                        sx={{
+                          width: "50px",
+                          height: "50px",
+                          color: bookmarkProjects?.data?.some(
+                            (favorite) => favorite.id === row.id
+                          )
+                            ? "orange" // Color when the project is a favorite
+                            : "gray", // Color when it's not a favorite
+                        }}
+                        onClick={() => handleFavorite(row)}
+                      >
+                        <BookmarkAdd />
+                      </IconButton>
+
+                      <Button
+                        onClick={() => handleEdit(row)}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Edit
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            )}
           </Table>
         )}
       </TableContainer>

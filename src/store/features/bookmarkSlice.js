@@ -58,7 +58,7 @@ export const updateBookmarkProjects = createAsyncThunk(
   }
 );
 
-export const removeBookmarkProject = createAsyncThunk(
+export const removeBookmarkProjects = createAsyncThunk(
   "bookmark/removeBookmarkProjects",
   async (id) => {
     const response = await axios.delete(
@@ -117,14 +117,14 @@ const bookmarkSlice = createSlice({
         state.bookmarkStatus = "failed";
         state.bookmarkError = action.error.message;
       })
-      .addCase(removeBookmarkProject.pending, (state) => {
+      .addCase(removeBookmarkProjects.pending, (state) => {
         state.bookmarkStatus = "loading";
       })
-      .addCase(removeBookmarkProject.fulfilled, (state, action) => {
+      .addCase(removeBookmarkProjects.fulfilled, (state, action) => {
         state.bookmarkStatus = "succeeded";
         state.removeBookmarkProject = action.payload; // Store fetched data in state
       })
-      .addCase(removeBookmarkProject.rejected, (state, action) => {
+      .addCase(removeBookmarkProjects.rejected, (state, action) => {
         state.bookmarkStatus = "failed";
         state.bookmarkError = action.error.message;
       });

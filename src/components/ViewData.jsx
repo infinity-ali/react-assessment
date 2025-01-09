@@ -6,6 +6,7 @@ import {
   InputLabel,
   IconButton,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import { BookmarkAdd, BookmarkBorder } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -13,30 +14,37 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addBookmarkProjects,
   fetchBookmarkProjects,
-  removeBookmarkProject,
+  removeBookmarkProjects,
 } from "../store/features/bookmarkSlice";
 
 const ViewData = ({ project }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const favorites = useSelector((state) => state.favorites.favorites); // Access favorites from Redux
 
-  const { bookmarkProjects } = useSelector((state) => state.bookmark);
+  const {
+    bookmarkProjects,
+    bookmarkStatus,
+    addBookmarkProject,
+    removeBookmarkProject,
+  } = useSelector((state) => state.bookmark);
 
   useEffect(() => {
     if (!bookmarkProjects?.data?.length) {
       dispatch(fetchBookmarkProjects());
     }
-  }, []);
+  }, [addBookmarkProject, removeBookmarkProject]);
 
   // Handle toggling favorite state
   const handleFavorite = (project) => {
-    const isFavorited = bookmarkProjects?.data?.some(
-      (favorite) => favorite.id === project.id
-    );
+    let isFavorited = false;
+    bookmarkProjects?.data?.filter((favorite) => {
+      if (favorite.projectId === project.projectId) {
+        return (isFavorited = true);
+      } else return;
+    });
 
     if (isFavorited) {
-      dispatch(removeBookmarkProject(project.id)); // Dispatch removeFavorite action
+      dispatch(removeBookmarkProjects(project.id)); // Dispatch removeFavorite action
     } else {
       dispatch(addBookmarkProjects(project)); // Dispatch addFavorite action
     }
@@ -78,17 +86,20 @@ const ViewData = ({ project }) => {
           </InputLabel>
           <Typography variant="body1">{project.projectName}</Typography>
         </Box>
-
-        <IconButton
-          sx={{
-            width: "50px",
-            height: "50px",
-            color: isFavorite ? "gold" : "gray",
-          }}
-          onClick={() => handleFavorite(project)} // Toggle favorite state
-        >
-          {isFavorite ? <BookmarkAdd /> : <BookmarkBorder />}
-        </IconButton>
+        {bookmarkStatus === "loading" ? (
+          <CircularProgress />
+        ) : (
+          <IconButton
+            sx={{
+              width: "50px",
+              height: "50px",
+              color: isFavorite ? "gold" : "gray",
+            }}
+            onClick={() => handleFavorite(project)} // Toggle favorite state
+          >
+            {isFavorite ? <BookmarkAdd /> : <BookmarkBorder />}
+          </IconButton>
+        )}
       </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
