@@ -170,9 +170,11 @@ const TableView = () => {
                           })
                         }
                       >
-                        project_{row.id}
+                        Project_{row.id}
                       </TableCell>
-                      <TableCell>{row.projectName}</TableCell>
+                      <TableCell className="capitalize">
+                        {row.projectName}
+                      </TableCell>
                       <TableCell>{row.startDate}</TableCell>
                       <TableCell>{row.endDate}</TableCell>
                       <TableCell>{row.projectManager}</TableCell>

@@ -80,7 +80,7 @@ const Sidebar = () => {
               {bookmarkProjects?.data?.map((item) => (
                 <li
                   key={item.id}
-                  className=" text-gray-600 hover:underline text-sm cursor-pointer font-bold"
+                  className="capitalize text-gray-600 hover:underline text-sm cursor-pointer font-bold"
                   onClick={() =>
                     navigate(`/projects/${item.id}`, {
                       state: {
