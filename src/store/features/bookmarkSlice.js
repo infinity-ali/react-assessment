@@ -60,9 +60,9 @@ export const updateBookmarkProjects = createAsyncThunk(
 
 export const removeBookmarkProjects = createAsyncThunk(
   "bookmark/removeBookmarkProjects",
-  async (id) => {
+  async (favoriteId, id) => {
     const response = await axios.delete(
-      `https://677fcfb20476123f76a83b79.mockapi.io/api/v1/FavoriteProject/${id}`
+      `https://677fcfb20476123f76a83b79.mockapi.io/api/v1/FavoriteProject//${favoriteId}`
     );
     return response; // Assume API returns the updated favorite list
   }

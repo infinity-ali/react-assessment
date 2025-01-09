@@ -9,7 +9,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { BookmarkAdd, BookmarkBorder } from "@mui/icons-material";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addBookmarkProjects,
@@ -18,7 +18,7 @@ import {
 } from "../store/features/bookmarkSlice";
 
 const ViewData = ({ project }) => {
-  const param = useLocation;
+  const param = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -38,23 +38,32 @@ const ViewData = ({ project }) => {
   // Handle toggling favorite state
   const handleFavorite = (project) => {
     let isFavorited = false;
+    let projectId = null;
+    // let favoriteId = null;
     bookmarkProjects?.data?.filter((favorite) => {
       if (favorite.projectId === project.projectId) {
+        projectId = favorite.id;
+        // favoriteId = project.projectId;
         return (isFavorited = true);
       } else return;
     });
 
     if (isFavorited) {
-      dispatch(removeBookmarkProjects(param.id)); // Dispatch removeFavorite action
+      dispatch(removeBookmarkProjects(projectId)); // Dispatch removeFavorite action
     } else {
       dispatch(addBookmarkProjects(project)); // Dispatch addFavorite action
     }
   };
 
+  console.log(param.id);
+
   // Check if project is in favorites
-  const isFavorite = bookmarkProjects?.data?.some(
-    (favorite) => favorite.projectId === project.projectId
-  );
+  let isFavorite = null;
+  bookmarkProjects?.data?.filter((favorite) => {
+    if (favorite.projectId === project.projectId) {
+      return (isFavorite = true);
+    } else return;
+  });
 
   return (
     <Paper

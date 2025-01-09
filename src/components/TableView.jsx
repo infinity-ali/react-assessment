@@ -53,13 +53,17 @@ const TableView = () => {
 
   const handleFavorite = (project) => {
     let isFavorited = false;
+    let projectId = null;
+    // let favoriteId = null;
     bookmarkProjects?.data?.filter((favorite) => {
       if (favorite.projectId === project.projectId) {
+        projectId = favorite.id;
+        // favoriteId = project.projectId;
         return (isFavorited = true);
       } else return;
     });
     if (isFavorited) {
-      dispatch(removeBookmarkProjects(project.id));
+      dispatch(removeBookmarkProjects(projectId));
     } else {
       dispatch(addBookmarkProjects(project));
     }

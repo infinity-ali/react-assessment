@@ -40,7 +40,19 @@ const UpdateForm = ({ project, onCancel }) => {
     },
     validationSchema,
     onSubmit: (values) => {
-      dispatch(updateProjects({ id: params.id, project: values }));
+      dispatch(
+        updateProjects({
+          id: params.id,
+          project: {
+            projectId: project.projectId,
+            projectName: values.projectName,
+            description: values.description,
+            startDate: values.startDate,
+            endDate: values.endDate,
+            projectManager: values.projectManager,
+          },
+        })
+      );
       // Optionally call the onUpdate function passed as a prop to inform the parent
       navigate("/projects");
     },
